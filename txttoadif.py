@@ -13,7 +13,6 @@ if len(sys.argv) < 2:
 INPUT_FILE = sys.argv[1]
 
 # Check if a second parameter (manual date) is provided
-# If it exists, it will be used as the QSO_DATE in the ADIF records.
 OVERRIDE_DATE = sys.argv[2] if len(sys.argv) > 2 else None
 
 # Generate output filename by stripping extension and adding .adif
@@ -74,6 +73,10 @@ with open(OUTPUT_ADIF, "w", encoding="utf-8") as adif:
         
         call, rcvd_serial, time_str = parts[0], parts[1], parts[2]
 
+        # FIX: Remove colons from the time string (e.g., "12:05" becomes "1205")
+        # This ensures that datetime.strptime doesn't see extra characters.
+        time_str = time_str.replace(":", "")
+
         call = call.upper()
         rcvd_serial = rcvd_serial.zfill(3)
         sent_str = str(sent_serial).zfill(3)
@@ -87,8 +90,6 @@ with open(OUTPUT_ADIF, "w", encoding="utf-8") as adif:
         utc_dt = local_dt.astimezone(UTC_TZ)
 
         # --- Date Logic ---
-        # If a second parameter was provided (e.g., 20231025), use it as the date field.
-        # Otherwise, use the calculated date from the log file.
         if OVERRIDE_DATE:
             qso_date_val = OVERRIDE_DATE
         else:
@@ -111,4 +112,4 @@ with open(OUTPUT_ADIF, "w", encoding="utf-8") as adif:
         adif.write(record)
         sent_serial += 1
 
-print("✅ ADIF log made:", OUTPUT_ADIF)
+print(f"✅ ADIF log made: {OUTPUT_ADIF}")
