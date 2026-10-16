@@ -107,7 +107,7 @@ def format_edi_qso(qso):
                 '6m': '6', '2m': '2', '1.25m': '125', '70cm': '70', '23cm': '23', 
                 '13cm': '13', '9cm': '9', '6cm': '6', '3cm': '3', '1.25cm': '125'}
     
-    band_num = band_map.get(band.lower(), band)
+    band_num = '7'
     
     rst_sent = qso.get('rst_sent', '59') or '59'
     freq = qso.get('freq', '') or ''
